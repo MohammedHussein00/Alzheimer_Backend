@@ -4,6 +4,7 @@ using Alzheimer.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Alzaheimer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240618060004_test4")]
+    partial class test4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,21 +81,12 @@ namespace Alzaheimer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DoctorId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PatientId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ReceiverId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SenderId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SenderType")
-                        .HasColumnType("int");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
@@ -181,6 +175,7 @@ namespace Alzaheimer.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DoctorId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PatientId")
@@ -754,17 +749,21 @@ namespace Alzaheimer.Migrations
 
             modelBuilder.Entity("Alzaheimer.Tables.Chat", b =>
                 {
-                    b.HasOne("Alzheimer.Tables.Doctor", "Doctor")
+                    b.HasOne("Alzheimer.Tables.Doctor", "doctor")
                         .WithMany("Chats")
-                        .HasForeignKey("DoctorId");
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("Alzheimer.Tables.Patient", "Patient")
+                    b.HasOne("Alzheimer.Tables.Patient", "patient")
                         .WithMany("Chats")
-                        .HasForeignKey("PatientId");
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Doctor");
+                    b.Navigation("doctor");
 
-                    b.Navigation("Patient");
+                    b.Navigation("patient");
                 });
 
             modelBuilder.Entity("Alzaheimer.Tables.Clinic", b =>
@@ -793,7 +792,9 @@ namespace Alzaheimer.Migrations
                 {
                     b.HasOne("Alzheimer.Tables.Doctor", "doctor")
                         .WithMany("Detections")
-                        .HasForeignKey("DoctorId");
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Alzheimer.Tables.Patient", "Patient")
                         .WithMany()
